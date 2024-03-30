@@ -33,19 +33,26 @@ export const Editor = () => {
   const { loading, setLoading } = useLoadingContext();
 
   useEffect(() => {
+    gettingData();
+    // eslint-disable-next-line
+  }, []);
+
+  const gettingData = async () => {
     if (codeId && codeId !== oldData.id) {
       setLoading(true);
-      getCode(codeId).then((response) => {
-        if (response) {
-          setOldData(response);
-          setValue(response.code);
-          setLanguage(response.language as LanguagesEnum);
-          setTheme(response.theme as ThemeEnum);
-        }
-        setLoading(false);
-      });
+      const response = await getCode(codeId);
+      if (response && response.id) {
+        setOldData(response);
+        setValue(response.code);
+        setLanguage(response.language as LanguagesEnum);
+        setTheme(response.theme as ThemeEnum);
+      } else {
+        setValue('Code not found. Please try again later.');
+        toast.error(response.message || 'Code not found. Please try again later.');
+      }
+      setLoading(false);
     }
-  }, [codeId, oldData.id, setLoading]);
+  };
 
   const handleEditorChange = (value?: string) => {
     setValue(value || '');
@@ -87,7 +94,7 @@ export const Editor = () => {
   };
 
   return (
-    <section className="flex justify-center md:px-0 px-4">
+    <section className="flex justify-center px-4 md:px-0">
       <Toaster
         toastOptions={{
           position: 'top-right',
@@ -95,7 +102,7 @@ export const Editor = () => {
       />
 
       <div
-        className={`rounded-xl border py-5 shadow-lg shadow-dark/50 md:w-4/5 w-full ${theme === ThemeEnum.Light ? 'border-gray bg-white' : 'border-dark bg-black'}`}
+        className={`w-full rounded-xl border py-5 shadow-lg shadow-dark/50 md:w-4/5 ${theme === ThemeEnum.Light ? 'border-gray bg-white' : 'border-dark bg-black'}`}
       >
         <EditorMonaco
           height="500px"
@@ -120,10 +127,10 @@ export const Editor = () => {
             />
           </div>
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-            {codeId && (
+            {oldData.id && (
               <button className="flex items-center gap-2 text-charcoal hover:opacity-90" onClick={handleCopy}>
                 <img src="/images/link.svg" alt="link icon" />
-                .../{codeId}
+                .../{oldData.id}
               </button>
             )}
             <button
