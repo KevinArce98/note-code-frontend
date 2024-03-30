@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import EditorMonaco from '@monaco-editor/react';
-import { CreateCodeDto, LanguagesEnum, ThemeEnum } from '../types';
-import { Dropdown } from './Dropdown';
-import { createCode, getCode } from '../services';
 import { useParams } from 'wouter';
+import EditorMonaco from '@monaco-editor/react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useLoadingContext } from '../hooks';
+import { Dropdown } from './Dropdown';
+import { CreateCodeDto, LanguagesEnum, ThemeEnum } from '../types';
+import { createCode, getCode } from '../services';
 
 export const Editor = () => {
   const { codeId } = useParams();
@@ -87,7 +87,7 @@ export const Editor = () => {
   };
 
   return (
-    <section className="flex justify-center">
+    <section className="flex justify-center md:px-0 px-4">
       <Toaster
         toastOptions={{
           position: 'top-right',
@@ -95,7 +95,7 @@ export const Editor = () => {
       />
 
       <div
-        className={`rounded-xl border py-5 shadow-lg shadow-dark/50 md:w-4/5 ${theme === ThemeEnum.Light ? 'border-gray bg-white' : 'border-dark bg-black'}`}
+        className={`rounded-xl border py-5 shadow-lg shadow-dark/50 md:w-4/5 w-full ${theme === ThemeEnum.Light ? 'border-gray bg-white' : 'border-dark bg-black'}`}
       >
         <EditorMonaco
           height="500px"
